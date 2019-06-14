@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
+    <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <RootNamespace>Pivotal.RouteService.Auth.Egress.Buildpack</RootNamespace>
+    <AssemblyName>buildpack</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PivotalServices.WcfClient.Kerberos.Interceptor" Version="1.1.7-beta" />
+  </ItemGroup>
+    
+</Project>
