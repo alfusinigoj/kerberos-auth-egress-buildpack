@@ -27,8 +27,9 @@ namespace UnitTests.Wcf
 
             var diff = new XmlDiff(expectedWebConfig, appendedWebConfig);
 
-            diff.CompareDocuments(new XmlDiffOptions());
-            var content = diff.ToString();
+            diff.CompareDocuments(new XmlDiffOptions() { IgnoreAttributeOrder = true, IgnoreCase = true, TrimWhitespace = true});
+
+            Assert.Empty(diff.DiffNodeList);
         }
     }
 }
