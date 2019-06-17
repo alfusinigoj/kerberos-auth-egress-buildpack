@@ -52,8 +52,8 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
             {
                 new WcfProcessor(new ClientDetector(webConfigPath),
                                                 new DependencyValidator(buildPath),
-                                                new WebConfigFileAppender(webConfigPath, buildPath),
-                                                new RequiredAssemblyMover(buildPath))
+                                                new WebConfigFileAppender(webConfigPath),
+                                                new RequiredAssemblyMover(Path.Combine(Path.GetDirectoryName(typeof(EgressBuildpack).Assembly.Location), "requiredAssemblies"), Path.Combine(buildPath, "bin")))
             };
 
             return processors;

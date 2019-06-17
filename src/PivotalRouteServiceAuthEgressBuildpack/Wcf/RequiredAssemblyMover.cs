@@ -5,21 +5,23 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack.Wcf
 {
     public class RequiredAssemblyMover : IAssemblyMover
     {
-        private readonly string buildPath;
+        private readonly string sourcePath;
+        private readonly string appBinPath;
 
-        public RequiredAssemblyMover(string buildPath)
+        public RequiredAssemblyMover(string sourcePath, string appBinPath)
         {
-            this.buildPath = buildPath;
+            this.sourcePath = sourcePath;
+            this.appBinPath = appBinPath;
         }
 
         public void Move()
         {
-            string[] files = Directory.GetFiles(Path.Combine(Path.GetDirectoryName(typeof(EgressBuildpack).Assembly.Location), "requiredAssemblies"));
+            string[] files = Directory.GetFiles(sourcePath);
 
             Console.WriteLine("-----> Injecting MIT Kerberos assembllies and c++ redistributables into the application target directory...");
 
             foreach (string file in files)
-                File.Copy(file, Path.Combine(buildPath, "bin", Path.GetFileName(file)), true);
+                File.Copy(file, Path.Combine(appBinPath, Path.GetFileName(file)), true);
         }
     }
 }

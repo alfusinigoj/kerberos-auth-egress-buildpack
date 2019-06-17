@@ -9,15 +9,13 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack.Wcf
     {
         private bool disposedValue = false;
         private readonly string webConfigPath;
-        private readonly string buildPath;
         List<string> svcEndpointLevelBehaviours = new List<string>();
         List<string> clientEndpointLevelBehaviours = new List<string>();
         XmlDocument doc = new XmlDocument();
 
-        public WebConfigFileAppender(string webConfigPath, string buildPath)
+        public WebConfigFileAppender(string webConfigPath)
         {
             this.webConfigPath = webConfigPath;
-            this.buildPath = buildPath;
             doc.Load(webConfigPath);
         }
 
