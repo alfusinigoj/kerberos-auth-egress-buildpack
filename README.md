@@ -9,4 +9,4 @@ In detail, if any service running in PCF is protected by `route service` (https:
 3. Validates if `PivotalServices.WcfClient.Kerberos.Interceptor` package is installed
 
 #### Dependency
-Nuget Package to be added 'PivotalServices.WcfClient.Kerberos.Interceptor' (https://github.com/alfusinigoj/wcf-client-interceptor-egress-kerberos-auth)
+Nuget Package to be added `PivotalServices.WcfClient.Kerberos.Interceptor` (https://github.com/alfusinigoj/wcf-client-interceptor-egress-kerberos-auth)
