@@ -27,9 +27,29 @@ namespace UnitTests.Wcf
 
             var diff = new XmlDiff(expectedWebConfig, appendedWebConfig);
 
-            diff.CompareDocuments(new XmlDiffOptions() { IgnoreAttributeOrder = true, IgnoreCase = true, TrimWhitespace = true});
+            diff.CompareDocuments(new XmlDiffOptions() { IgnoreAttributeOrder = true, IgnoreCase = true, TrimWhitespace = true });
 
             Assert.Empty(diff.DiffNodeList);
+        }
+
+        [Fact]
+        public void Test_WillNotSaveTheFileIfNotExecutedAsDisposable()
+        {
+            var originalWebConfigPath = string.Format(originalWebConfigPathTemplate, "Test");
+
+            File.Copy(string.Format(originalWebConfigPathTemplate, string.Empty), originalWebConfigPath, true);
+
+            var appender = new WebConfigFileAppender(originalWebConfigPath);
+            appender.Execute();
+
+            var expectedWebConfig = File.ReadAllText(expectedWebConfigPath);
+            var appendedWebConfig = File.ReadAllText(originalWebConfigPath);
+
+            var diff = new XmlDiff(expectedWebConfig, appendedWebConfig);
+
+            diff.CompareDocuments(new XmlDiffOptions() { IgnoreAttributeOrder = true, IgnoreCase = true, TrimWhitespace = true });
+
+            Assert.NotEmpty(diff.DiffNodeList);
         }
     }
 }

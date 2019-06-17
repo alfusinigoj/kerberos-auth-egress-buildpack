@@ -7,6 +7,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 {
     public class EgressBuildpack : SupplyBuildpack
     {
+        string requiredAssembliesFolder = Path.Combine(Path.GetDirectoryName(typeof(EgressBuildpack).Assembly.Location), "requiredAssemblies");
 
         protected override bool Detect(string buildPath)
         {
@@ -34,7 +35,6 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
                     processor.Execute();
                 }
 
-
                 Console.WriteLine("=======================================================================================");
                 Console.WriteLine("============= Route Service Iwa Auth Egress Buildpack execution completed =============");
                 Console.WriteLine("=======================================================================================");
@@ -53,7 +53,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
                 new WcfProcessor(new ClientDetector(webConfigPath),
                                                 new DependencyValidator(buildPath),
                                                 new WebConfigFileAppender(webConfigPath),
-                                                new RequiredAssemblyMover(Path.Combine(Path.GetDirectoryName(typeof(EgressBuildpack).Assembly.Location), "requiredAssemblies"), Path.Combine(buildPath, "bin")))
+                                                new RequiredAssemblyMover(requiredAssembliesFolder, Path.Combine(buildPath, "bin")))
             };
 
             return processors;
