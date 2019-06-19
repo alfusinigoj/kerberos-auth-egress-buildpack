@@ -10,7 +10,7 @@ namespace UnitTests
         const string RAW_GIT_URL = "https://raw.githubusercontent.com/alfusinigoj/route-service-auth-egress-buildpack/master/README.md";
         const string NOT_RAW_GIT_URL = "https://github.com/alfusinigoj/route-service-auth-egress-buildpack/blob/master/README.md";
 
-        [Fact]
+        [Fact(Skip = "due to access token")]
         public void Test_WithAPITokenProvided()
         {
             var path = Path.Combine(Environment.CurrentDirectory, "TestGitDownload", "From_Github");
@@ -18,7 +18,7 @@ namespace UnitTests
             if (File.Exists(path))
                 File.Delete(path);
                 
-            var downloader = new GitHubFileDownloader(RAW_GIT_URL, "50b82e65d6c79f77d1433fbdf9035b36ac698c50");
+            var downloader = new GitHubFileDownloader(RAW_GIT_URL, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
             downloader.Download(path);
 
             Assert.True(File.Exists(path));
