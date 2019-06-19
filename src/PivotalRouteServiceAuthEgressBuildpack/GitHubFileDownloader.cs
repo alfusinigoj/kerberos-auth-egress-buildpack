@@ -29,6 +29,8 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
             if (!fileRawGitHubUrl.Contains("raw.githubusercontent.com"))
                 throw new Exception($"{fileRawGitHubUrl} is not a valid github raw url!");
 
+            Console.WriteLine($"-----> Downloading file {fileRawGitHubUrl} into {targetFilePath}...");
+
             using (var client = new WebClient())
             {
                 if (apiToken != null)

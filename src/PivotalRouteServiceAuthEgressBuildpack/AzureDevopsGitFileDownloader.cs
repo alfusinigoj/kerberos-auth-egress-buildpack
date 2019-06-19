@@ -27,6 +27,9 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
         public void Download(string targetFilePath)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            Console.WriteLine($"-----> Downloading file {sourceFileUrlRelativeToTheRoot} into {targetFilePath} from azure devops collection: {collectionUrl}, project: {projectName}, repo: {repoName}");
+
             Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
 
             var credentials = new VssCredentials(new VssBasicCredential("", apiToken));

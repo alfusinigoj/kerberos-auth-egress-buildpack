@@ -15,6 +15,8 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
         public void Update()
         {
+            Console.WriteLine($"-----> Modifying kerberos configuration file {kerberosConfigFilePath}");
+
             var krbRawData = File.ReadAllText(kerberosConfigFilePath);
             var krbNewData = replaceKeyValue(krbRawData, "default_client_keytab_name", @"C:\Users\vcap\app\creds.ccreds");
             krbNewData = replaceKeyValue(krbNewData, "default_keytab_name", @"C:\Users\vcap\app\creds.ccreds");
@@ -29,7 +31,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
             var matchKeyTabName = Regex.Match(krbData, string.Format(keyPattern, keyName));
             if (!matchKeyTabName.Success)
             {
-                throw new ApplicationException($"No {keyName} found. Please refer to the MIT kerberos config template file.");
+                throw new ApplicationException($"No {keyName} found. Please refer to the template here https://github.com/alfusinigoj/route-service-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini.");
             }
 
             return Regex.Replace(krbData, string.Format(keyPattern, keyName), $"$1{value}");

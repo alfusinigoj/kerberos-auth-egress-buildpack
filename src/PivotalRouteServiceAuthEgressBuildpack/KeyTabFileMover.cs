@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Xml;
 
 namespace Pivotal.RouteService.Auth.Egress.Buildpack
@@ -7,6 +8,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
     {
         private readonly string buildPath;
         private readonly IGitFileDownloader downloader;
+        const string KEYTAB_FILE_NM = "creds.ccreds";
 
         public KeyTabFileMover(string buildPath, IGitFileDownloader downloader)
         {
@@ -16,7 +18,9 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
         public void Move()
         {
-            throw new NotImplementedException();
+            var targetFileName = Path.Combine(buildPath, KEYTAB_FILE_NM);
+
+            downloader.Download(targetFileName);
         }
     }
 

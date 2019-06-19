@@ -8,8 +8,10 @@ In detail, if any service running in PCF is protected by `route service` (https:
 
   1. Modifies the wcf client section in web.config with endpoint behaviours required for injection of kerberos ticket
   2. Adds MIT Kerberos dlls and Kerberos executables required for the operation, into application bin folder
-  3. Validates if `PivotalServices.WcfClient.Kerberos.Interceptor` package is installed - this package will add a kerberos config template to the project for reference purposes
+  3. Validates if `PivotalServices.WcfClient.Kerberos.Interceptor` package is installed
   4. Copies the provided kerberos configuration file and keytab file from the sources (github and azure devops git repos). Configure the sources as mentioned in the Variables section below.
+
+For kerberos config template, please here https://github.com/alfusinigoj/route-service-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
 
 #### Environment Variables
   1. If you choose to use GitHub for kerberos config file and keytab file, please set the following environment variables in the application cf manifest
