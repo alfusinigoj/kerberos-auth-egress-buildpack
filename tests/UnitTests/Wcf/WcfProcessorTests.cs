@@ -10,14 +10,14 @@ namespace UnitTests.Wcf
         Mock<IDetector> detector;
         Mock<IDependencyValidator> depValidator;
         Mock<IConfigFileAppender> configAppender;
-        Mock<IAssemblyMover> assemMover;
+        Mock<IFileMover> assemMover;
 
         public WcfProcessorTests()
         {
             detector = new Mock<IDetector>();
             depValidator = new Mock<IDependencyValidator>();
             configAppender = new Mock<IConfigFileAppender>();
-            assemMover = new Mock<IAssemblyMover>();
+            assemMover = new Mock<IFileMover>();
         }
 
         [Fact]

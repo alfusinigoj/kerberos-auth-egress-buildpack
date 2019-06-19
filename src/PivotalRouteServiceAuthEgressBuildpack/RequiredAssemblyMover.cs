@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 
-namespace Pivotal.RouteService.Auth.Egress.Buildpack.Wcf
+namespace Pivotal.RouteService.Auth.Egress.Buildpack
 {
-    public class RequiredAssemblyMover : IAssemblyMover
+    public class RequiredAssemblyMover : IFileMover
     {
         private readonly string sourcePath;
         private readonly string appBinPath;

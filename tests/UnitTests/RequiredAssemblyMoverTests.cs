@@ -1,10 +1,9 @@
 using Pivotal.RouteService.Auth.Egress.Buildpack;
-using Pivotal.RouteService.Auth.Egress.Buildpack.Wcf;
 using System;
 using System.IO;
 using Xunit;
 
-namespace UnitTests.Wcf
+namespace UnitTests
 {
     public class RequiredAssemblyMoverTests
     {

@@ -5,9 +5,9 @@
         private readonly IDetector detector;
         private readonly IDependencyValidator dependencyValidator;
         private readonly IConfigFileAppender fileAppender;
-        private readonly IAssemblyMover assemblyMover;
+        private readonly IFileMover assemblyMover;
 
-        public WcfProcessor(IDetector detector, IDependencyValidator dependencyValidator, IConfigFileAppender fileAppender, IAssemblyMover assemblyMover)
+        public WcfProcessor(IDetector detector, IDependencyValidator dependencyValidator, IConfigFileAppender fileAppender, IFileMover assemblyMover)
         {
             this.detector = detector;
             this.dependencyValidator = dependencyValidator;

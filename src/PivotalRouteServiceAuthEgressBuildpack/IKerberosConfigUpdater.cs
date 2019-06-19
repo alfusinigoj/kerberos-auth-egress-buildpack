@@ -1,7 +1,7 @@
 ﻿namespace Pivotal.RouteService.Auth.Egress.Buildpack
 {
-    public interface IProcessor
+    public interface IKerberosConfigUpdater
     {
-        void Execute();
+        void Update();
     }
 }
