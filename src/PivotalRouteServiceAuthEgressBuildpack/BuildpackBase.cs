@@ -35,10 +35,14 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
                 Console.WriteLine(arg);
             }
 
-            foreach (var e in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>())
+            if (Convert.ToBoolean(Environment.GetEnvironmentVariable("LOG_ENVIRONMENT_VARIABLES") ?? "false"))
             {
-                Console.WriteLine($"{e.Key}: {e.Value}");
+                foreach (var e in Environment.GetEnvironmentVariables().Cast<DictionaryEntry>())
+                {
+                    Console.WriteLine($"{e.Key}: {e.Value}");
+                }
             }
+
             return DoRun(args);
         }
 

@@ -27,7 +27,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
         string replaceKeyValue(string krbData, string keyName, string value)
         {
-            var keyPattern = @"({0}\s?=\s?)([a-zA-Z0-9\\:.]*)";
+            var keyPattern = @"({0}\s?=\s?)([a-zA-Z0-9\\:._-]*)";
             var matchKeyTabName = Regex.Match(krbData, string.Format(keyPattern, keyName));
             if (!matchKeyTabName.Success)
             {
