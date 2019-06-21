@@ -7,8 +7,8 @@ namespace UnitTests
 {
     public class GitHubFileDownloaderTests
     {
-        const string RAW_GIT_URL = "https://raw.githubusercontent.com/alfusinigoj/route-service-auth-egress-buildpack/master/README.md";
-        const string NOT_RAW_GIT_URL = "https://github.com/alfusinigoj/route-service-auth-egress-buildpack/blob/master/README.md";
+        Uri RAW_GIT_URL = new Uri("https://raw.githubusercontent.com/alfusinigoj/route-service-auth-egress-buildpack/master/README.md");
+        Uri NOT_RAW_GIT_URL = new Uri("https://github.com/alfusinigoj/route-service-auth-egress-buildpack/blob/master/README.md");
 
         [Fact(Skip = "due to access token")]
         public void Test_WithAPITokenProvided()

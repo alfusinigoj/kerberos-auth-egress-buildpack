@@ -9,13 +9,13 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 {
     public class AzureDevopsGitFileDownloader : IGitFileDownloader
     {
-        private readonly string collectionUrl;
+        private readonly Uri collectionUrl;
         private readonly string projectName;
         private readonly string repoName;
         private readonly string apiToken;
         private readonly string sourceFileUrlRelativeToTheRoot;
 
-        public AzureDevopsGitFileDownloader(string collectionUrl, string projectName, string repoName, string apiToken, string sourceFileUrlRelativeToTheRoot)
+        public AzureDevopsGitFileDownloader(Uri collectionUrl, string projectName, string repoName, string apiToken, string sourceFileUrlRelativeToTheRoot)
         {
             this.collectionUrl = collectionUrl;
             this.projectName = projectName;
@@ -34,7 +34,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
             var credentials = new VssCredentials(new VssBasicCredential("", apiToken));
 
-            var connection = new VssConnection(new Uri(collectionUrl), credentials);
+            var connection = new VssConnection(collectionUrl, credentials);
 
             var client = connection.GetClient<GitHttpClient>();
 

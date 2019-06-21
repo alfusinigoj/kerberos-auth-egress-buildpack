@@ -8,16 +8,16 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
     {
         const string AUTH_HEADER = "Authorization";
         const string ACCEPT_HEADER = "Accept";
-        readonly string fileRawGitHubUrl;
+        readonly Uri fileRawGitHubUrl;
         private readonly string apiToken;
 
-        public GitHubFileDownloader(string fileRawGitHubUrl, string apiToken)
+        public GitHubFileDownloader(Uri fileRawGitHubUrl, string apiToken)
             : this(fileRawGitHubUrl)
         {
             this.apiToken = apiToken;
         }
 
-        public GitHubFileDownloader(string fileRawGitHubUrl)
+        public GitHubFileDownloader(Uri fileRawGitHubUrl)
         {
             this.fileRawGitHubUrl = fileRawGitHubUrl;
         }
@@ -26,7 +26,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            if (!fileRawGitHubUrl.Contains("raw.githubusercontent.com"))
+            if (!fileRawGitHubUrl.ToString().Contains("raw.githubusercontent.com"))
                 throw new Exception($"{fileRawGitHubUrl} is not a valid github raw url!");
 
             Console.WriteLine($"-----> Downloading file {fileRawGitHubUrl} into {targetFilePath}...");

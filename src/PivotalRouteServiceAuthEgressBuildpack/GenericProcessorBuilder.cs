@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pivotal.RouteService.Auth.Egress.Buildpack.Settings;
+using System;
 using System.IO;
 
 namespace Pivotal.RouteService.Auth.Egress.Buildpack
@@ -6,15 +7,6 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
     public class GenericProcessorBuilder
     {
         private readonly string buildPath;
-        const string AZURE_DEVOPS_COLL_URL_ENV_VAR_NM = "AZURE_DEVOPS_COLLECTION_URL";
-        const string AZURE_DEVOPS_PROJECT_NM_ENV_VAR_NM = "AZURE_DEVOPS_PROJECT_NAME";
-        const string AZURE_DEVOPS_REPO_NM_ENV_VAR_NM = "AZURE_DEVOPS_REPO_NAME";
-        const string AZURE_DEVOPS_ACCESS_TOKEN_ENV_VAR_NM = "AZURE_DEVOPS_ACCESS_TOKEN";
-        const string AZURE_DEVOPS_SRC_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM = "AZURE_DEVOPS_SOURCE_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT";
-        const string AZURE_DEVOPS_SRC_KERBEROS_CONFIG_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM = "AZURE_DEVOPS_SOURCE_KERBEROS_CONFIG_FILE_URL_RELATIVE_TO_THE_ROOT";
-        const string GITHUB_KEYTAB_FILE_RAW_URL_ENV_VAR_NM = "GITHUB_KEYTAB_FILE_RAW_URL";
-        const string GITHUB_KERBEROS_CONFIG_FILE_RAW_URL_ENV_VAR_NM = "GITHUB_KERBEROS_CONFIG_FILE_RAW_URL";
-        const string GITHUB_ACCESS_TOKEN_ENV_VAR_NM = "GITHUB_ACCESS_TOKEN";
 
         public GenericProcessorBuilder(string buildPath)
         {
@@ -23,71 +15,69 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
         public IProcessor Build()
         {
-            string kerberosConfigFilePath = Path.Combine(buildPath, "bin", "krb5.ini");
+            string kerberosConfigTargetFilePath = Path.Combine(buildPath, "bin", "krb5.ini");
 
-            var gitHubRawKeyTabFileUrl = Environment.GetEnvironmentVariable(GITHUB_KEYTAB_FILE_RAW_URL_ENV_VAR_NM);
-            var gitHubRawkerberosConfigFileUrl = Environment.GetEnvironmentVariable(GITHUB_KERBEROS_CONFIG_FILE_RAW_URL_ENV_VAR_NM);
+            var kerberosConfigFileMover = GetKerberosConfigFileMover(kerberosConfigTargetFilePath);
+            var kerberosConfigUpdater = new KerberosConfigUpdater(kerberosConfigTargetFilePath);
+            var keyTabFileMover = GetKerberosKeytabFileMover();
 
-            var gitHubAccessToken = Environment.GetEnvironmentVariable(GITHUB_ACCESS_TOKEN_ENV_VAR_NM);
-            var azureDevOpsCollectionUrl = Environment.GetEnvironmentVariable(AZURE_DEVOPS_COLL_URL_ENV_VAR_NM);
-            var azureDevOpsProjectName = Environment.GetEnvironmentVariable(AZURE_DEVOPS_PROJECT_NM_ENV_VAR_NM);
-            var azureDevOpsRepoName = Environment.GetEnvironmentVariable(AZURE_DEVOPS_REPO_NM_ENV_VAR_NM);
-            var azureDevOpsAccessTokenl = Environment.GetEnvironmentVariable(AZURE_DEVOPS_ACCESS_TOKEN_ENV_VAR_NM);
-            var azureDevOpsKerberosConfigFilePath = Environment.GetEnvironmentVariable(AZURE_DEVOPS_SRC_KERBEROS_CONFIG_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM);
-            var azureDevOpsKeytabFilePath = Environment.GetEnvironmentVariable(AZURE_DEVOPS_SRC_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM);
+            return new GenericProcessor(kerberosConfigFileMover, kerberosConfigUpdater, keyTabFileMover);
+        }
 
+        private IKeyTabFileMover GetKerberosKeytabFileMover()
+        {
+            IKeyTabFileMover keyTabFileMover;
 
-            if (!string.IsNullOrWhiteSpace(gitHubRawKeyTabFileUrl) && !string.IsNullOrWhiteSpace(gitHubRawkerberosConfigFileUrl))
+            if (!string.IsNullOrWhiteSpace(GitHubSettings.KerberosKeytabRawUrlString))
             {
-                return new GenericProcessor(
-                    new KerberosConfigFileMover(kerberosConfigFilePath, new GitHubFileDownloader(gitHubRawkerberosConfigFileUrl, gitHubAccessToken)),
-                    new KerberosConfigUpdater(kerberosConfigFilePath),
-                    new KeyTabFileMover(buildPath, new GitHubFileDownloader(gitHubRawKeyTabFileUrl, gitHubAccessToken)));
+                keyTabFileMover = new KeyTabFileMover(buildPath, new GitHubFileDownloader(new Uri(GitHubSettings.KerberosKeytabRawUrlString), GitHubSettings.AccessToken));
             }
-            else if (!string.IsNullOrWhiteSpace(azureDevOpsCollectionUrl))
+            else if (!string.IsNullOrWhiteSpace(AzureDevOpsGitSettings.KerberosKeytabPath))
             {
-                ValidateRequiredVariables(azureDevOpsProjectName, azureDevOpsRepoName, azureDevOpsAccessTokenl,
-                                            azureDevOpsKerberosConfigFilePath, azureDevOpsKeytabFilePath);
+                var downloader = new AzureDevopsGitFileDownloader(AzureDevOpsGitSettings.CollectionUrl,
+                                                                    AzureDevOpsGitSettings.ProjectName,
+                                                                    AzureDevOpsGitSettings.RepositoryName,
+                                                                    AzureDevOpsGitSettings.AccessToken,
+                                                                    AzureDevOpsGitSettings.KerberosKeytabPath);
 
-                return new GenericProcessor(
-                                        new KerberosConfigFileMover(kerberosConfigFilePath,
-                                            new AzureDevopsGitFileDownloader(azureDevOpsCollectionUrl,
-                                                        azureDevOpsProjectName,
-                                                        azureDevOpsRepoName,
-                                                        azureDevOpsAccessTokenl,
-                                                        azureDevOpsKerberosConfigFilePath)),
-                                        new KerberosConfigUpdater(kerberosConfigFilePath),
-                                        new KeyTabFileMover(buildPath,
-                                            new AzureDevopsGitFileDownloader(azureDevOpsCollectionUrl,
-                                                        azureDevOpsProjectName,
-                                                        azureDevOpsRepoName,
-                                                        azureDevOpsAccessTokenl,
-                                                        azureDevOpsKeytabFilePath)));
+                keyTabFileMover = new KeyTabFileMover(buildPath, downloader);
+            }
+            //else if (true)
+            //{
+
+            //}
+            else
+            {
+                throw new Exception("Kerberos keytab file information (GitHub/AzureDevOpsGit/Vault) not provided! Please refer to the readme for environment variable details to set.");
+            }
+
+            return keyTabFileMover;
+        }
+
+        private IKerberosConfigFileMover GetKerberosConfigFileMover(string targetPath)
+        {
+            IKerberosConfigFileMover kerberosConfigFileMover;
+
+            if (!string.IsNullOrWhiteSpace(GitHubSettings.KerberosConfigRawUrlString))
+            {
+                kerberosConfigFileMover = new KerberosConfigFileMover(targetPath, new GitHubFileDownloader(new Uri(GitHubSettings.KerberosConfigRawUrlString), GitHubSettings.AccessToken));
+            }
+            else if (!string.IsNullOrWhiteSpace(AzureDevOpsGitSettings.KerberosConfigPath))
+            {
+                var downloader = new AzureDevopsGitFileDownloader(AzureDevOpsGitSettings.CollectionUrl,
+                                                                    AzureDevOpsGitSettings.ProjectName,
+                                                                    AzureDevOpsGitSettings.RepositoryName,
+                                                                    AzureDevOpsGitSettings.AccessToken,
+                                                                    AzureDevOpsGitSettings.KerberosConfigPath);
+
+                kerberosConfigFileMover = new KerberosConfigFileMover(targetPath, downloader);
             }
             else
             {
-                throw new Exception("Kerberos configuration or Keytab file information not provided! Please refer to the readme for environment variable details to set them.");
+                throw new Exception("Kerberos configuration information (GitHub/AzureDevOpsGit) not provided! Please refer to the readme for environment variable details to set.");
             }
-        }
 
-        private static void ValidateRequiredVariables(string azureDevOpsProjectName, string azureDevOpsRepoName,
-                                                        string azureDevOpsAccessTokenl, string azureDevOpsKerberosConfigFilePath,
-                                                        string azureDevOpsKeytabFilePath)
-        {
-            if (string.IsNullOrWhiteSpace(azureDevOpsProjectName))
-                throw new Exception($"{AZURE_DEVOPS_PROJECT_NM_ENV_VAR_NM} environemt variable is not set!");
-
-            if (string.IsNullOrWhiteSpace(azureDevOpsRepoName))
-                throw new Exception($"{AZURE_DEVOPS_REPO_NM_ENV_VAR_NM} environemt variable is not set!");
-
-            if (string.IsNullOrWhiteSpace(azureDevOpsAccessTokenl))
-                throw new Exception($"{AZURE_DEVOPS_ACCESS_TOKEN_ENV_VAR_NM} environemt variable is not set!");
-
-            if (string.IsNullOrWhiteSpace(azureDevOpsKerberosConfigFilePath))
-                throw new Exception($"{AZURE_DEVOPS_SRC_KERBEROS_CONFIG_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM} environemt variable is not set!");
-
-            if (string.IsNullOrWhiteSpace(azureDevOpsKeytabFilePath))
-                throw new Exception($"{AZURE_DEVOPS_SRC_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT_ENV_VAR_NM} environemt variable is not set!");
+            return kerberosConfigFileMover;
         }
     }
 }

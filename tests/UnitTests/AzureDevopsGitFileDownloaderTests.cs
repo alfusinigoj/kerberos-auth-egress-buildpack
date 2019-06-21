@@ -7,7 +7,7 @@ namespace UnitTests
 {
     public class AzureDevopsGitFileDownloaderTests
     {
-        string collectionUrl = "https://foo.visualstudio.com";
+        Uri collectionUrl = new Uri("https://foo.visualstudio.com");
         string projectName = "foo_bar";
         string repoName = "foo_bar_repo";
         string apiToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
