@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Net;
 
-namespace Pivotal.RouteService.Auth.Egress.Buildpack
+namespace Pivotal.RouteService.Auth.Egress.Buildpack.Downloaders
 {
     public class AzureDevopsGitFileDownloader : IGitFileDownloader
     {

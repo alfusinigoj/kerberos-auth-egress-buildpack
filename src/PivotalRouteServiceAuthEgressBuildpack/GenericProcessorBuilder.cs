@@ -1,4 +1,5 @@
-﻿using Pivotal.RouteService.Auth.Egress.Buildpack.Settings;
+﻿using Pivotal.RouteService.Auth.Egress.Buildpack.Downloaders;
+using Pivotal.RouteService.Auth.Egress.Buildpack.Settings;
 using System;
 using System.IO;
 
@@ -42,13 +43,19 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
 
                 keyTabFileMover = new KeyTabFileMover(buildPath, downloader);
             }
-            //else if (true)
-            //{
+            else if (!string.IsNullOrWhiteSpace(AzureVaultSettings.SecretName))
+            {
+                var downloader = new AzureKeyVaultFileDownloader(AzureVaultSettings.VaultBaseUrl,
+                                                                    AzureVaultSettings.ClientAppId,
+                                                                    AzureVaultSettings.ClientAppSecret,
+                                                                    AzureVaultSettings.SecretName,
+                                                                    AzureVaultSettings.SecretVersion);
 
-            //}
+                keyTabFileMover = new KeyTabFileMover(buildPath, downloader);
+            }
             else
             {
-                throw new Exception("Kerberos keytab file information (GitHub/AzureDevOpsGit/Vault) not provided! Please refer to the readme for environment variable details to set.");
+                throw new Exception("Kerberos keytab file information (GitHub/AzureDevOpsGit/AzureVault) not provided! Please refer to the readme for environment variable details to set.");
             }
 
             return keyTabFileMover;

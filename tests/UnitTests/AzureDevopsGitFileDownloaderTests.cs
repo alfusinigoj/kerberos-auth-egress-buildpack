@@ -1,4 +1,4 @@
-﻿using Pivotal.RouteService.Auth.Egress.Buildpack;
+﻿using Pivotal.RouteService.Auth.Egress.Buildpack.Downloaders;
 using System;
 using System.IO;
 using Xunit;

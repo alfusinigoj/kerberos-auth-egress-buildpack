@@ -1,4 +1,4 @@
-#### Breaking: v1.* - Mandate to use github or azure devops as source for kerberos config and keytab files
+#### Breaking: v1.* - Use github or azure devops as source for kerberos config; Use github or azure devops or azure key vault as source for keytab files
 
 #### This project offers a supply buildpack which helps applying IWA security (kerberos) for app-app/svc-svc secure communication, in PCF. 
 
@@ -14,25 +14,49 @@ In detail, if any service running in PCF is protected by `route service` (https:
 For kerberos config template, please here https://github.com/alfusinigoj/route-service-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
 
 #### Environment Variables
-  1. If you choose to use GitHub for kerberos config file and keytab file, please set the following environment variables in the application cf manifest
-	 - `GITHUB_KEYTAB_FILE_RAW_URL` *Raw url* for the keytab file
+- ##### Kerberos config file
+  1. If you choose to use GitHub for kerberos config file, please set the following environment variable and `Github Configuration Variables` (below) in the application cf manifest
 	 - `GITHUB_KERBEROS_CONFIG_FILE_RAW_URL` *Raw url* for the kerberos config file
-	 - `GITHUB_ACCESS_TOKEN` GitHub access token (if required)
 
-  2. If you choose to use Azure DevOps for kerberos config file and keytab file, please set the following environment variables in the application cf manifest
-	 - `AZURE_DEVOPS_COLLECTION_URL` (See below sample)
-	 - `AZURE_DEVOPS_PROJECT_NAME` (See below sample)
-	 - `AZURE_DEVOPS_REPO_NAME` (See below sample)
-	 - `AZURE_DEVOPS_ACCESS_TOKEN` Azure DevOps access token
-	 - `AZURE_DEVOPS_SOURCE_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT` Path of the keytab file referring to the root of the repo
+  2. If you choose to use Azure DevOps for kerberos config file, please set the following environment variable and `Azure DevOps Configuration Variables` (below) in the application cf manifest
 	 - `AZURE_DEVOPS_SOURCE_KERBEROS_CONFIG_FILE_URL_RELATIVE_TO_THE_ROOT` Path of the keytab file referring to the root of the repo
 
-	 Sample url: https://dev.visualstudio.com/my_project/_git/my_repo 
-		- Collection Url: `https://dev.visualstudio.com`
-		- ProjectName: `my_project`
-		- RepoName: `my_repo`
+- ##### Kerberos keytab file
+  1. If you choose to use GitHub for kerberos keytab file, please set the following environment variable and `Github Configuration Variables` (below) in the application cf manifest
+	 - `GITHUB_KEYTAB_FILE_RAW_URL` *Raw url* for the keytab file
 
-#### Dependency
+  2. If you choose to use Azure DevOps for kerberos keytab file, please set the following environment variable and `Azure DevOps Configuration Variables` (below) in the application cf manifest
+	 - `AZURE_DEVOPS_SOURCE_KEYTAB_FILE_URL_RELATIVE_TO_THE_ROOT` Path of the keytab file referring to the root of the repo
+
+  2. If you choose to use Azure Key Valut for kerberos keytab file, please set the following environment variable and `Azure Key Vault Configuration Variables` (below) in the application cf manifest 
+      - `AZURE_SECRET_NM` Name of the Key Vault Secret
+      - `AZURE_SECRET_VER` Version of the Key Vault Secret
+      
+       **NOTE: Secret Value should be Base64 content of the keytab file**
+
+- ##### Github Configuration Variables
+	- `GITHUB_ACCESS_TOKEN` GitHub access token (if required)
+
+- ##### Azure DevOps Configuration Variables
+  - `AZURE_DEVOPS_COLLECTION_URL` (See below sample)
+  - `AZURE_DEVOPS_PROJECT_NAME` (See below sample)
+  - `AZURE_DEVOPS_REPO_NAME` (See below sample)
+  - `AZURE_DEVOPS_ACCESS_TOKEN` Azure DevOps access token
+  - For example if url is https://dev.visualstudio.com/my_project/_git/my_repo 
+    - Collection Url: `https://dev.visualstudio.com`
+    - ProjectName: `my_project`
+    - RepoName: `my_repo`
+
+- ##### Azure Key Vault Configuration Variables
+  - `AZURE_VAULT_BASE_URL` (See below sample)
+  - `AZURE_APP_ID` Application Client Id (Used to obtain the access token)
+  - `AZURE_APP_SECRET` Application Client Secret (Used to obtain the access token)
+  - For example if url is https://mysecret.vault.azure.net/secrets/Test/12345 
+    - Vault Base Url: `https://mysecret.vault.azure.net`
+    - Secret Name: `Test`
+    - Secret Version: `12345`
+
+#### Dependencies
 Nuget Package to be added `PivotalServices.WcfClient.Kerberos.Interceptor` (https://github.com/alfusinigoj/wcf-client-interceptor-egress-kerberos-auth)
 
 #### To manually build and release this buildpack using command `nuke <target>` from powershell window.

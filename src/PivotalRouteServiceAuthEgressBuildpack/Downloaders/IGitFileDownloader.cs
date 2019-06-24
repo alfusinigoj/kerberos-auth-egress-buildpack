@@ -1,4 +1,4 @@
-﻿namespace Pivotal.RouteService.Auth.Egress.Buildpack
+﻿namespace Pivotal.RouteService.Auth.Egress.Buildpack.Downloaders
 {
     public interface IGitFileDownloader
     {

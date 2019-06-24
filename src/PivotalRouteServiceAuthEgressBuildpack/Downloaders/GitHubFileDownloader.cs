@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 
-namespace Pivotal.RouteService.Auth.Egress.Buildpack
+namespace Pivotal.RouteService.Auth.Egress.Buildpack.Downloaders
 {
     public class GitHubFileDownloader : IGitFileDownloader
     {
@@ -26,7 +26,7 @@ namespace Pivotal.RouteService.Auth.Egress.Buildpack
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            if (!fileRawGitHubUrl.ToString().Contains("raw.githubusercontent.com"))
+            if (!fileRawGitHubUrl.AbsoluteUri.Contains("raw.githubusercontent.com"))
                 throw new Exception($"{fileRawGitHubUrl} is not a valid github raw url!");
 
             Console.WriteLine($"-----> Downloading file {fileRawGitHubUrl} into {targetFilePath}...");
