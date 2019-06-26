@@ -2,7 +2,7 @@
 
 #### This project offers a supply buildpack which helps applying IWA security (kerberos) for app-app/svc-svc secure communication, in PCF. 
 
-In detail, if any service running in PCF is protected by `route service` (https://github.com/macsux/route-service-auth), the client application should be attaching a valid kerberos ticket, so as to be authenticated properly. This buildpack, together with the nuget package mentioned below will be intercepting all the egress requests and attaches a valid kerberos ticket. For more details, please listen to Andrew Stackhov's video here "youtube video link here"'
+In detail, if any service running in PCF is protected by `route service` (https://github.com/cloudfoundry-community/kerberos-auth-route-service), the client application should be attaching a valid kerberos ticket, so as to be authenticated properly. This buildpack, together with the nuget package mentioned below will be intercepting all the egress requests and attaches a valid kerberos ticket. For more details, please listen to Andrew Stackhov's video here "youtube video link here"'
 
 #### Specific functionalities executed by this buildpack
 
@@ -11,7 +11,7 @@ In detail, if any service running in PCF is protected by `route service` (https:
   3. Validates if `PivotalServices.WcfClient.Kerberos.Interceptor` package is installed
   4. Copies the provided kerberos configuration file and keytab file from the sources (github and azure devops git repos). Configure the sources as mentioned in the Variables section below.
 
-For kerberos config template, please here https://github.com/alfusinigoj/route-service-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
+For kerberos config template, please here https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor/blob/master/src/RouteServiceIwaWcfInterceptor/krb5.ini
 
 #### Environment Variables
 - ##### Kerberos config file
@@ -57,7 +57,7 @@ For kerberos config template, please here https://github.com/alfusinigoj/route-s
     - Secret Version: `12345`
 
 #### Dependencies
-Nuget Package to be added `PivotalServices.WcfClient.Kerberos.Interceptor` (https://github.com/alfusinigoj/wcf-client-interceptor-egress-kerberos-auth)
+Nuget Package to be added `PivotalServices.WcfClient.Kerberos.Interceptor` (https://github.com/cloudfoundry-community/kerberos-auth-egress-wcf-client-interceptor)
 
 #### To manually build and release this buildpack using command `nuke <target>` from powershell window.
 *Targets*
