@@ -13,7 +13,7 @@
     <PackageReference Include="Nuke.Common" Version="0.19.2" />
     <PackageReference Include="GitVersion.CommandLine.DotNetCore" Version="4.0.1-beta1-49" />
     <PackageReference Include="Octokit" Version="0.32.0" />
-    <PackageReference Include="SharpZipLib" Version="1.1.1-linuxfix" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
   </ItemGroup>
 
   <ItemGroup>
